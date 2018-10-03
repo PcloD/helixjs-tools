@@ -51,6 +51,7 @@ class ObjectType(IntEnum):
     ENTITY_PROXY = 24
     MORPH_TARGET = 25
     MORPH_ANIMATION = 26
+    SPHERICAL_HARMONICS = 27
 
 
 class PropertyType(IntEnum):
@@ -92,6 +93,7 @@ class PropertyType(IntEnum):
     INTENSITY = 40
     RADIUS = 41
     SPOT_ANGLES = 42
+    SH_WEIGHTS = 43
 
     # texture properties
     WRAP_MODE = 50
