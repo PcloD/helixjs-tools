@@ -10,3 +10,5 @@ to build, go to the tool's subdirectory and run the following commands:
 npm install
 gulp
 ```
+
+For other tools, see the `README.md` files in their directories.
