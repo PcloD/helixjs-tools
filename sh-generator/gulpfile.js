@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var uglify = require('gulp-uglify');
+var terser = require('gulp-terser');
 var rollup = require('gulp-better-rollup');
 var rename = require('gulp-rename');
 var commonjs = require("rollup-plugin-commonjs");
@@ -34,8 +34,8 @@ gulp.task('build', function ()
 
 gulp.task('minimize', ['build'], function ()
 {
-	gulp.src(['./build/helix.js', './build/helix-io.js', './build/helix-physics.js'], {base: './build/'})
-		.pipe(uglify())
+	gulp.src(['./build/script.js'], {base: './build/'})
+		.pipe(terser())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build/'));
 });

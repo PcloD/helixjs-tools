@@ -233,7 +233,7 @@
 
 		_accumulate(x, y, r, g, b)
 		{
-			// - .5 to match helix's panorama orientation
+			// + .5 to match helix's panorama orientation
 			let u = -(x / this._width * 2.0 - 1.0) + .5;
 			let v = y / this._height * 2.0 - 1.0;
 			let phi = v * Math.PI / 2;
