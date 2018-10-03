@@ -1,0 +1,18 @@
+{
+  "name": "sh-generator",
+  "version": "1.0.0",
+  "description": "Convert hdr panoramas to analytical spherical harmonics (ash) files",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-better-rollup": "^3.3.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-uglify": "^3.0.1",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-node-resolve": "^3.4.0"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.0-rc.3"
+  }
+}
