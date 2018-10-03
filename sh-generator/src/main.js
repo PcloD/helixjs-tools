@@ -41,6 +41,7 @@ function onDrop(event)
 
 function processFile(file)
 {
+	document.getElementById("errorContainer").classList.add("hidden");
 	document.getElementById("startContainer").classList.add("hidden");
 	document.getElementById("endContainer").classList.add("hidden");
 	document.getElementById("progress").classList.remove("hidden");
@@ -54,7 +55,14 @@ function processFile(file)
 
 function processHDR(data)
 {
-	let hdr = new HDR(data);
+	let hdr;
+	try {
+		hdr = new HDR(data);
+	}
+	catch(err) {
+		showError(err.message);
+	}
+
 	let generator = new SHGenerator();
 	generator.onComplete = onComplete;
 	generator.onProgress = onProgress;
@@ -92,4 +100,13 @@ function onDownloadClick()
 {
 	var blob = new Blob([ashContents], {type: "text/plain;charset=utf-8"});
 	saveAs(blob, "sh.ash");
+}
+
+function showError(message)
+{
+	document.getElementById("errorContainer").classList.remove("hidden");
+	document.getElementById("startContainer").classList.add("hidden");
+	document.getElementById("endContainer").classList.add("hidden");
+	document.getElementById("progress").classList.add("hidden");
+	document.getElementById("errorMessage").innerHTML = message;
 }

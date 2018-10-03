@@ -19,7 +19,8 @@ export class HDR
 	_parseHeader()
 	{
 		let line = this._readLine();
-		console.assert(line === "#?RADIANCE" || line === "#?RGBE", "Incorrect file format!");
+		if (line !== "#?RADIANCE" && line !== "#?RGBE")
+			throw new Error("Incorrect file format!");
 
 		while (line !== "") {
 			// empty line means there's only 1 line left, containing size info:
@@ -30,7 +31,8 @@ export class HDR
 					this._gamma = parseFloat(parts[1]);
 					break;
 				case "FORMAT":
-					console.assert(parts[1] === "32-bit_rle_rgbe" || parts[1] === "32-bit_rle_xyze", "Incorrect format!");
+					if (parts[1] !== "32-bit_rle_rgbe" && parts[1] !== "32-bit_rle_xyze")
+						throw new Error("Incorrect encoding format!");
 					break;
 				case "EXPOSURE":
 					this._exposure *= parseFloat(parts[1]);
@@ -95,8 +97,11 @@ export class HDR
 		let offset = this._offset;
 
 		for (let y = 0; y < this.height; ++y) {
-			console.assert(this._dataView.getUint16(offset), "Invalid scanline hash!");
-			console.assert(this._dataView.getUint16(offset + 2) === this.width, "Scanline doesn't match picture dimension!");
+			if (this._dataView.getUint16(offset) !== 0x0202)
+				throw new Error("Incorrect scanline start hash");
+
+			if (this._dataView.getUint16(offset + 2) !== this.width)
+				throw new Error("Scanline doesn't match picture dimension!");
 
 			offset += 4;
 			let numComps = w * 4;

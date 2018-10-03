@@ -25,7 +25,8 @@
 		_parseHeader()
 		{
 			let line = this._readLine();
-			console.assert(line === "#?RADIANCE" || line === "#?RGBE", "Incorrect file format!");
+			if (line !== "#?RADIANCE" && line !== "#?RGBE")
+				throw new Error("Incorrect file format!");
 
 			while (line !== "") {
 				// empty line means there's only 1 line left, containing size info:
@@ -36,7 +37,8 @@
 						this._gamma = parseFloat(parts[1]);
 						break;
 					case "FORMAT":
-						console.assert(parts[1] === "32-bit_rle_rgbe" || parts[1] === "32-bit_rle_xyze", "Incorrect format!");
+						if (parts[1] !== "32-bit_rle_rgbe" && parts[1] !== "32-bit_rle_xyze")
+							throw new Error("Incorrect encoding format!");
 						break;
 					case "EXPOSURE":
 						this._exposure *= parseFloat(parts[1]);
@@ -101,8 +103,11 @@
 			let offset = this._offset;
 
 			for (let y = 0; y < this.height; ++y) {
-				console.assert(this._dataView.getUint16(offset), "Invalid scanline hash!");
-				console.assert(this._dataView.getUint16(offset + 2) === this.width, "Scanline doesn't match picture dimension!");
+				if (this._dataView.getUint16(offset) !== 0x0202)
+					throw new Error("Incorrect scanline start hash");
+
+				if (this._dataView.getUint16(offset + 2) !== this.width)
+					throw new Error("Scanline doesn't match picture dimension!");
 
 				offset += 4;
 				let numComps = w * 4;
@@ -493,6 +498,7 @@
 
 	function processFile(file)
 	{
+		document.getElementById("errorContainer").classList.add("hidden");
 		document.getElementById("startContainer").classList.add("hidden");
 		document.getElementById("endContainer").classList.add("hidden");
 		document.getElementById("progress").classList.remove("hidden");
@@ -506,7 +512,14 @@
 
 	function processHDR(data)
 	{
-		let hdr = new HDR(data);
+		let hdr;
+		try {
+			hdr = new HDR(data);
+		}
+		catch(err) {
+			showError(err.message);
+		}
+
 		let generator = new SHGenerator();
 		generator.onComplete = onComplete;
 		generator.onProgress = onProgress;
@@ -544,6 +557,15 @@
 	{
 		var blob = new Blob([ashContents], {type: "text/plain;charset=utf-8"});
 		FileSaver(blob, "sh.ash");
+	}
+
+	function showError(message)
+	{
+		document.getElementById("errorContainer").classList.remove("hidden");
+		document.getElementById("startContainer").classList.add("hidden");
+		document.getElementById("endContainer").classList.add("hidden");
+		document.getElementById("progress").classList.add("hidden");
+		document.getElementById("errorMessage").innerHTML = message;
 	}
 
 })));
